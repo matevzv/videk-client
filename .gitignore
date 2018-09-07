@@ -1,0 +1,12 @@
+debian/files
+debian/videk-client.debhelper.log
+debian/videk-client.postinst.debhelper
+debian/videk-client.postrm.debhelper
+debian/videk-client.prerm.debhelper
+debian/debhelper-build-stamp
+debian/videk-client.substvars
+debian/videk-client
+VidekClient.egg-info
+.pybuild
+build
+*.pyc
