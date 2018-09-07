@@ -1,6 +1,5 @@
 [Unit]
 Description=Updates a node and sensors
-After=sna-lgtc-boot.service
 
 [Service]
 Environment=PYTHONUNBUFFERED=true

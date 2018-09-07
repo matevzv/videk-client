@@ -10,17 +10,17 @@ import netifaces as ni
 from datetime import datetime
 from videkrestclient import Videk
 
-videk_api_key = open('/etc/videk/api.key').readline().strip()
-videk = Videk("https://videk.ijs.si", videk_api_key)
-
-current_ip = None
-machine_id = open('/etc/machine-id').readline().strip()
-
 conf = {}
 with open('/etc/videk/conf') as confile:
     for line in confile:
         name, var = line.partition("=")[::2]
         conf[name.strip()] = var.strip()
+
+videk_api_key = conf['key']
+videk = Videk(conf['api'], videk_api_key)
+
+current_ip = None
+machine_id = open('/etc/machine-id').readline().strip()
 
 if videk.serverOnline():
     print "Videk server is online ..."
@@ -66,7 +66,7 @@ def init(videk, current_ip):
 
     if current_ip != node_ip:
         print "reseting sna-lgtc-boot and munin services ..."
-        subprocess.call(["systemctl", "restart", "sna-lgtc-boot"])
+        subprocess.call(["set-hostname"])
         subprocess.call(["systemctl", "restart", "munin-node"])
         node = socket.gethostname()
         cluster = node[:node.rfind("-")]

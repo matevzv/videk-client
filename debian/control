@@ -7,7 +7,7 @@ Standards-Version: 3.9.8
 
 Package: videk-client
 Architecture: all
-Depends: sna-lgtc-boot, systemd, ${misc:Depends}, ${python:Depends}
+Depends: systemd, munin, ${misc:Depends}, ${python:Depends}
 Description: Boot scripts for Videk client
  This package provides Videk REST client and a systemd service for
  registration of SNA-LGTC boards in Videk management system.
