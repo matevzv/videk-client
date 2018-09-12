@@ -62,10 +62,13 @@ def init(videk, current_ip):
     videk.latitude = lat
     videk.longitude = lon
 
-    node_ip = re.findall(r'[0-9]+(?:\.[0-9]+){3}', node.replace("-", "."))[0]
+    node_ip = re.findall(r'[0-9]+(?:\.[0-9]+){3}', node.replace("-", "."))
+
+    if node_ip:
+        node_ip = node_ip[0]
 
     if current_ip != node_ip:
-        print "reseting sna-lgtc-boot and munin services ..."
+        print "reseting hostname and munin services ..."
         subprocess.call(["set-hostname"])
         subprocess.call(["systemctl", "restart", "munin-node"])
         node = socket.gethostname()

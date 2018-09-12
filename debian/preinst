@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    install)
+        if id "videk" >/dev/null 2>&1; then
+            exit 0
+        else
+            adduser videk --gecos ",,," --disabled-password
+            usermod -aG sudo videk
+            mkdir /home/videk/.ssh
+            chmod 700 /home/videk/.ssh
+            echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCmQWsxU0y0lZSY2u2WpIEsc9Lg0eT2OpP8l/YwTjdlLm6lFKuQ57USmUl+iBQ5lYzdraIwHc84j2GawMFIbbRBLp9Z2cnTJZnnG3WvmUxtu9yRnzSvJ7s+n1dT7tphENDPITvbLPWKWNwbk67+5un0Dvzgk09Qcj6lh1c6k4UuOJHGurqoniqiC3pY97M5bI+Zd2Fqaqp78S3CIkGWoa9hDl4DHnwzDEoai0pWzEjDc22fTHelUDiQtW6w7DvR/GFnzA9Bq0OUaJmqpxdWivOC5RRQNRnxij4N0dOEKUI1A6v4+aIRFeuehUtHV7idwMzmVA5f92/mVoo7M6HixeCJ administrator@videk" > /home/videk/.ssh/authorized_keys
+        fi
+        ;;
+
+    upgrade|abort-upgrade)
+        ;;
+
+    *)
+        echo "unknown argument \`$1'" >&2
+        exit 0
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0
