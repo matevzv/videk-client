@@ -10,6 +10,19 @@ import netifaces as ni
 from datetime import datetime
 from videkrestclient import Videk
 
+def getserial():
+    cpuserial = "0000000000000000"
+    try:
+        f = open('/proc/cpuinfo','r')
+        for line in f:
+            if line[0:6]=='Serial':
+                cpuserial = line[10:26]
+        f.close()
+    except:
+        cpuserial = "ERROR000000000"
+ 
+    return cpuserial
+
 conf = {}
 with open('/etc/videk/conf') as confile:
     for line in confile:
@@ -20,7 +33,11 @@ videk_api_key = conf['key']
 videk = Videk(conf['api'], videk_api_key)
 
 current_ip = None
-machine_id = open('/etc/machine-id').readline().strip()
+
+if conf['id'] == "rpi-serial":
+    machine_id = getserial()
+else:
+    machine_id = open('/etc/machine-id').readline().strip()
 
 if videk.serverOnline():
     print "Videk server is online ..."

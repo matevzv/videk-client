@@ -19,3 +19,7 @@ To add a new release in change log:
 After installation, the configuration is in `/etc/videk/conf` file. Videk API key must be written under key section. This key can be found at videk.ijs.si by selecting
 *Users*, *admin*. The API key is displayed under *API Token* header under *User
 info*.
+
+If you are installing this package on Raspberry pi in `/etc/videk/conf` file set:
+
+    $ id=rpi-serial

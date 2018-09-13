@@ -2,3 +2,4 @@ if=wlan0
 api=https://videk.ijs.si
 key=secret
 host=sna-lgtc
+id=machine-id
