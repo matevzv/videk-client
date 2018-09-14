@@ -4,3 +4,9 @@ export PYBUILD_SYSTEM=distutils
 
 %:
 	dh $@ --with python2 --with systemd --buildsystem=pybuild --system=setuptools
+
+override_dh_systemd_enable:
+	dh_systemd_enable --no-enable
+
+override_dh_systemd_start:
+	dh_systemd_start --no-start
