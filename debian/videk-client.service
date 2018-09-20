@@ -1,5 +1,5 @@
 [Unit]
-Description=Updates a node and sensors
+Description=Videk client.
 
 [Service]
 Environment=PYTHONUNBUFFERED=true
