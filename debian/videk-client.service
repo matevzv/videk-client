@@ -1,5 +1,5 @@
 [Unit]
-Description=Videk client.
+Description=Videk client
 
 [Service]
 Environment=PYTHONUNBUFFERED=true
