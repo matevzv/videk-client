@@ -1,3 +1,9 @@
+videk-client (2.1.0-1ubuntu1) unstable; urgency=medium
+
+  * Add after network online to systemd service
+
+ -- Matevz Vucnik <matevz.vucnik@ijs.si>  Wed, 14 Nov 2018 13:19:04 +0100
+
 videk-client (2.0.0-1) unstable; urgency=medium
 
   * Add complete videk-client setup.

@@ -1,5 +1,6 @@
 [Unit]
 Description=Videk client
+After=network-online.target
 
 [Service]
 Environment=PYTHONUNBUFFERED=true
