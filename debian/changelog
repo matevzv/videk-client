@@ -1,4 +1,4 @@
-videk-client (2.1.0-1ubuntu1) unstable; urgency=medium
+videk-client (2.1.0-1) unstable; urgency=medium
 
   * Add after network online to systemd service
 
