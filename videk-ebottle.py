@@ -48,13 +48,6 @@ else:
     print "Videk server is offline ..."
     sys.exit(1)
 
-#sensors = '''[{"name": "temperature", "value": 20.5, "unit": "C"},
-#            {"name": "battery", "value": 51, "unit": "%"},
-#            {"name": "luminance", "value": 100, "unit": "lm"},
-#            {"name": "position_x", "value": 1, "unit": "G"},
-#            {"name": "position_y", "value": 0, "unit": "G"},
-#            {"name": "position_z", "value": 1, "unit": "G"}]'''
-
 def uploadSensors(node, node_id, sensor_type, sensors):
     for sensor in sensors:        
         sensor_id = videk.getSensorID(node, sensor_type, sensor['name'])
