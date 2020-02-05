@@ -8,3 +8,5 @@ VidekClient.egg-info
 .pybuild
 build
 *.pyc
+conf
+.vscode
