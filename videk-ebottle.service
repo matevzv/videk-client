@@ -1,0 +1,12 @@
+[Unit]
+Description=Videk client
+After=network-online.target
+
+[Service]
+Environment=PYTHONUNBUFFERED=true
+ExecStart=/usr/bin/videk-ebottle
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
