@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import re
 import sys
@@ -27,7 +27,7 @@ def getserial():
     return cpuserial
 
 conf = {}
-with open('conf') as confile:
+with open('/etc/videk/conf') as confile:
     for line in confile:
         name, var = line.partition("=")[::2]
         conf[name.strip()] = var.strip()
@@ -43,9 +43,9 @@ else:
     machine_id = open('/etc/machine-id').readline().strip()
 
 if videk.serverOnline():
-    print "Videk server is online ..."
+    print("Videk server is online ...")
 else:
-    print "Videk server is offline ..."
+    print("Videk server is offline ...")
     sys.exit(1)
 
 def uploadSensors(node, node_id, sensor_type, sensors):
@@ -55,7 +55,6 @@ def uploadSensors(node, node_id, sensor_type, sensors):
             videk.createSensor(node_id, sensor_type, sensor['name'],
                 sensor['unit'])
             sensor_id = videk.getSensorID(node, sensor_type, sensor['name'])
-        print sensor_id
 
         measurement = '''{"latitude":"","longitude":"","ts":"","value":""}'''
         v = sensor['value']
@@ -87,15 +86,11 @@ def readSensors():
                     sensor['unit'] = "%"
                 elif 'luminance' in name:
                     sensor['unit'] = "lm"
-                elif 'position_x' in name:
+                elif 'position' in name:
                     sensor['unit'] = "G"
                 
                 sensors.append(sensor)
-
-    except IOError:
-        print("File not accessible")
-    finally:
-        sensor_file.close()
+    except:
         pass
 
     return sensors
@@ -115,8 +110,6 @@ while True:
     node_model = videk.getNodeByHardwareId(machine_id)
     node_name = node_model['name']
     node_id = int(node_model['id'])
-
-    print(node_model)
 
     writeLeds(node_model['extra_fields'])
     
