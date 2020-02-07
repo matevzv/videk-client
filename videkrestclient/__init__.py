@@ -193,7 +193,11 @@ class Videk:
             data = r.json()
             node_id = data[0]['id']
             sensor_id = str(node_id) + "-" + sensorType + "-" + sensorQuantity
-            return sensor_id
+            r = requests.get(self.api_url + self.sensors_url + "?id=" + str(sensor_id), headers=self.headers)
+            if "No sensors found" in r.text:
+                print("No sensors found")
+            else:
+                return sensor_id
         except requests.exceptions.RequestException as e:
             print(e)
 
