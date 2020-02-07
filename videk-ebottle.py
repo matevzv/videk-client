@@ -72,7 +72,7 @@ def readSensors():
     sensors = []
 
     try:
-        with open('sensors') as sensor_file:
+        with open('/tmp/ebottle/sensors') as sensor_file:
             for line in sensor_file:
                 sensor = {}
                 name, var = line.partition("=")[::2]
@@ -99,7 +99,7 @@ def writeLeds(extra_fields):
     for el in extra_fields:
         try:
             leds = el['LEDs']
-            f = open("leds", "w")
+            f = open("/tmp/ebottle/leds", "w")
             f.write(leds + "\n")
             f.close()
         except:
