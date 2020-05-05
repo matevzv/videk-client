@@ -39,7 +39,9 @@ if conf['id'] == "rpi-serial":
 else:
     machine_id = open('/etc/machine-id').readline().strip()
 
-if conf['sys'] == "ebottle":
+ebottle_cluster = conf['sys']
+
+if "ebottle" in ebottle_cluster:
     ebottle = True
 else:
     ebottle = False
@@ -50,7 +52,7 @@ else:
     print("Videk server is offline ...")
     sys.exit(1)
 
-def uploadSensors(node_id, sensor_type, sensors):
+def uploadSensors(node, node_id, sensor_type, sensors, lat, lon):
     for sensor in sensors:
         sensor_id = videk.getSensorID(node, sensor_type, sensor['name'])
         if sensor_id == None:
@@ -69,6 +71,69 @@ def uploadSensors(node_id, sensor_type, sensors):
         preparedData.append(data)
 
         videk.uploadMesurements(preparedData, node_id, sensor_id)
+
+def prepareSensors(tag, gw_id):
+    sensors = [{'name': "gateway", 'value': gw_id, 'unit':""}]
+
+    for name, value in tag.items():
+        sensor = {}
+        sensor['name'] = name
+        sensor['value'] = value
+
+        if 'temperature' in name:
+            sensor['unit'] = "C"
+        elif 'battery' in name:
+            sensor['unit'] = "%"
+        elif 'luminance' in name:
+            sensor['unit'] = "lm"
+        elif 'position' in name:
+            sensor['unit'] = "G"
+        
+        sensors.append(sensor)
+
+    return sensors
+
+def writeLeds(extra_fields):
+    for el in extra_fields:
+        try:
+            leds = el['LEDs']
+            f = open("/tmp/ebottle/leds", "w")
+            f.write(leds + "\n")
+            f.close()
+        except:
+            pass
+
+def manageTags(gw_id, lat, lon):
+    
+    gw_tags = []
+    
+    try:
+        t = open('tags')
+        tags = json.load(t)
+    except:
+        pass
+    
+    cluster_id = videk.getClusterID(ebottle_cluster)
+    if cluster_id == None:
+        videk.createCluster(ebottle_cluster)
+        cluster_id = videk.getClusterID(ebottle_cluster)
+
+    for tag in tags:
+        tag_mac = tag['mac']
+        tag_model = videk.getNode(tag_mac)
+
+        if tag_model == None:
+            videk.createNode(tag_mac, cluster_id)
+            tag_model = videk.getNode(tag_mac)
+
+        tag_id = int(tag_model['id'])
+        gw_tags.append(tag_id)
+        sensors = tag
+        sensors.pop("mac")
+        sensors = prepareSensors(sensors, gw_id)
+        uploadSensors(tag_mac, tag_id, tag_mac, sensors, lat, lon)
+
+    return gw_tags
 
 def init(videk, current_ip):
     global conf
@@ -186,6 +251,12 @@ def init(videk, current_ip):
         lat = node_model['loc_lat']
         lon = node_model['loc_lon']
         print("updated node location")
+
+    if ebottle:
+        tags = manageTags(node_model['id'], lat, lon)
+        tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
+        uploadSensors(node_model['name'], node_model['id'], "ebotle", tags, lat, lon)
+
 
 while True:
     current_ip = None

@@ -1,6 +1,7 @@
-if=enx847beb5aad2a
-api=https://resolvd.comsensus.eu
+if=lo
+api=http://localhost:3000
 key=S6tw699bbfJ6SW8lNsA6o5LTUExjBic3
 host=test-test
 id=machine-id
-sys=ebottle
+sys=ebottle-sh
+
