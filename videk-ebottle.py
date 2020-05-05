@@ -27,7 +27,7 @@ def getserial():
     return cpuserial
 
 conf = {}
-with open('/etc/videk/conf') as confile:
+with open('conf') as confile:
     for line in confile:
         name, var = line.partition("=")[::2]
         conf[name.strip()] = var.strip()
@@ -72,7 +72,7 @@ def readSensors():
     sensors = []
 
     try:
-        with open('/tmp/ebottle/sensors') as sensor_file:
+        with open('sensors') as sensor_file:
             for line in sensor_file:
                 sensor = {}
                 name, var = line.partition("=")[::2]
@@ -111,7 +111,7 @@ while True:
     node_name = node_model['name']
     node_id = int(node_model['id'])
 
-    writeLeds(node_model['extra_fields'])
+    #writeLeds(node_model['extra_fields'])
     
     s = readSensors()
     

@@ -1,5 +1,6 @@
-if=wlan0
-api=https://videk.ijs.si
-key=secret
-host=sna-lgtc
+if=enx847beb5aad2a
+api=https://resolvd.comsensus.eu
+key=S6tw699bbfJ6SW8lNsA6o5LTUExjBic3
+host=test-test
 id=machine-id
+sys=ebottle

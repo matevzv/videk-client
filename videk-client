@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import re
 import sys
@@ -24,7 +24,7 @@ def getserial():
     return cpuserial
 
 conf = {}
-with open('/etc/videk/conf') as confile:
+with open('conf') as confile:
     for line in confile:
         name, var = line.partition("=")[::2]
         conf[name.strip()] = var.strip()
@@ -38,6 +38,11 @@ if conf['id'] == "rpi-serial":
     machine_id = getserial()
 else:
     machine_id = open('/etc/machine-id').readline().strip()
+
+if conf['sys'] == "ebottle":
+    ebottle = True
+else:
+    ebottle = False
 
 if videk.serverOnline():
     print("Videk server is online ...")
@@ -86,9 +91,10 @@ def init(videk, current_ip):
 
     if current_ip != node_ip:
         print("reseting hostname and munin services ...")
-        subprocess.call(["set-hostname"])
-        subprocess.call(["systemctl", "restart", "munin-node"])
-        node = socket.gethostname()
+        #subprocess.call(["set-hostname"])
+        #subprocess.call(["systemctl", "restart", "munin-node"])
+        #node = socket.gethostname()
+        
         cluster = node[:node.rfind("-")]
 
     node_model_x = videk.getNode(node)
