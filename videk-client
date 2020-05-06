@@ -114,7 +114,7 @@ def manageTags(gw_id, lat, lon):
     
     cluster_id = videk.getClusterID(ebottle_cluster)
     if cluster_id == None:
-        videk.createCluster(ebottle_cluster)
+        videk.createCluster(ebottle_cluster, "ble")
         cluster_id = videk.getClusterID(ebottle_cluster)
 
     for tag in tags:
@@ -178,7 +178,7 @@ def init(videk, current_ip):
 
     cluster_id = videk.getClusterID(cluster)
     if cluster_id == None:
-        videk.createCluster(cluster)
+        videk.createCluster(cluster, "ssh")
         cluster_id = videk.getClusterID(cluster)
 
     node_id_by_node_name = videk.getNode(node)

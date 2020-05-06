@@ -21,9 +21,8 @@ class Videk:
         self.token = token
         self.headers = {'Content-Type': 'application/json', 'Authorization': token}
 
-    def createCluster(self, clusterName):
-        json_str = '''{ "name": "''' + clusterName + '''", "id": "''' + clusterName + '''", "tag": null, "type": "ssh",
-        "URL": null, "scan" : "false", "comment":""  }'''
+    def createCluster(self, clusterName, clusterType):
+        json_str = '''{ "name": "''' + clusterName + '''", "id": "''' + clusterName + '''", "tag": null, "type": "''' + clusterType + '''", "URL": null, "scan" : "false", "comment":""  }'''
         try:
             json_str = json_str.encode('utf8')
             r = self.session.post(self.api_url + self.clusters_url, data=json_str, headers=self.headers)
