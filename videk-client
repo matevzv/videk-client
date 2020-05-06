@@ -39,10 +39,17 @@ if conf['id'] == "rpi-serial":
 else:
     machine_id = open('/etc/machine-id').readline().strip()
 
-ebottle_cluster = conf['sys']
+if "sys" in conf:
+    sys = conf['sys']
 
-if "ebottle" in ebottle_cluster:
+if "info" in conf:
+    info = conf['info']
+else:
+    info = "example.com"
+
+if "ebottle" in sys:
     ebottle = True
+    ebottle_cluster = sys
 else:
     ebottle = False
 
@@ -88,27 +95,19 @@ def prepareSensors(tag, gw_id):
             sensor['unit'] = "lm"
         elif 'position' in name:
             sensor['unit'] = "G"
+            sensor['value'] = str(value)
         
         sensors.append(sensor)
 
     return sensors
 
-def writeLeds(extra_fields):
-    for el in extra_fields:
-        try:
-            leds = el['LEDs']
-            f = open("/tmp/ebottle/leds", "w")
-            f.write(leds + "\n")
-            f.close()
-        except:
-            pass
-
 def manageTags(gw_id, lat, lon):
     
     gw_tags = []
+    leds = []
     
     try:
-        t = open('tags')
+        t = open('test/tags')
         tags = json.load(t)
     except:
         pass
@@ -124,6 +123,8 @@ def manageTags(gw_id, lat, lon):
 
         if tag_model == None:
             videk.createNode(tag_mac, cluster_id)
+            videk.addNodeExtraField(tag_mac, "LEDs", "0")
+            videk.addNodeExtraField(tag_mac, "URL", info)
             tag_model = videk.getNode(tag_mac)
 
         tag_id = int(tag_model['id'])
@@ -132,6 +133,14 @@ def manageTags(gw_id, lat, lon):
         sensors.pop("mac")
         sensors = prepareSensors(sensors, gw_id)
         uploadSensors(tag_mac, tag_id, tag_mac, sensors, lat, lon)
+
+        for extra_field in tag_model['extra_fields']:
+            if 'LEDs' in extra_field:
+                leds.append({"mac": tag_mac, "leds": extra_field['LEDs'] })
+
+    f = open("test/leds", "w")
+    f.write(json.dumps(leds))
+    f.close()
 
     return gw_tags
 
