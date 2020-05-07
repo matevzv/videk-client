@@ -24,7 +24,7 @@ def getserial():
     return cpuserial
 
 conf = {}
-with open('conf') as confile:
+with open('/etc/videk/conf') as confile:
     for line in confile:
         name, var = line.partition("=")[::2]
         conf[name.strip()] = var.strip()
@@ -107,7 +107,7 @@ def manageTags(gw_id, lat, lon):
     leds = []
     
     try:
-        t = open('test/tags')
+        t = open('/tmp/ebottle/tags')
         tags = json.load(t)
     except:
         pass
@@ -138,7 +138,7 @@ def manageTags(gw_id, lat, lon):
             if 'LEDs' in extra_field:
                 leds.append({"mac": tag_mac, "leds": extra_field['LEDs'] })
 
-    f = open("test/leds", "w")
+    f = open("/tmp/ebottle/leds", "w")
     f.write(json.dumps(leds))
     f.close()
 
