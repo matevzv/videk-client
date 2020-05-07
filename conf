@@ -1,8 +1,8 @@
 if=lo
-api=http://localhost:3000
+api=http://localhost
 key=secret
-host=ebottle-gw
+host=test-test
 id=machine-id
-sys=ebottle-sh
-info=http://www.log-a-tec.eu/ebottle
+sys=test-test
+info=http://example.com
 

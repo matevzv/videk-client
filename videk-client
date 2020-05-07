@@ -165,9 +165,9 @@ def init(videk, current_ip):
 
     if current_ip != node_ip:
         print("reseting hostname and munin services ...")
-        #subprocess.call(["set-hostname"])
-        #subprocess.call(["systemctl", "restart", "munin-node"])
-        #node = socket.gethostname()
+        subprocess.call(["set-hostname"])
+        subprocess.call(["systemctl", "restart", "munin-node"])
+        node = socket.gethostname()
         
         cluster = node[:node.rfind("-")]
 
