@@ -59,7 +59,10 @@ else:
     print("Videk server is offline ...")
     sys.exit(1)
 
-def uploadSensors(node, node_id, sensor_type, sensors, lat, lon):
+lat = 46.042767
+lon = 14.487632
+
+def uploadSensors(node, node_id, sensor_type, sensors):
     for sensor in sensors:
         sensor_id = videk.getSensorID(node, sensor_type, sensor['name'])
         if sensor_id == None:
@@ -101,7 +104,7 @@ def prepareSensors(tag, gw_id):
 
     return sensors
 
-def manageTags(gw_id, lat, lon):
+def manageTags(gw_id):
     
     gw_tags = []
     leds = []
@@ -132,7 +135,7 @@ def manageTags(gw_id, lat, lon):
         sensors = tag
         sensors.pop("mac")
         sensors = prepareSensors(sensors, gw_id)
-        uploadSensors(tag_mac, tag_id, tag_mac, sensors, lat, lon)
+        uploadSensors(tag_mac, tag_id, tag_mac, sensors)
 
         for extra_field in tag_model['extra_fields']:
             if 'LEDs' in extra_field:
@@ -147,11 +150,11 @@ def manageTags(gw_id, lat, lon):
 def init(videk, current_ip):
     global conf
     global machine_id
+    global lat
+    global lon
 
     node = socket.gethostname()
     cluster = node[:node.rfind("-")]
-    lat = 46.042767
-    lon = 14.487632
     mac = open('/sys/class/net/'+conf['if']+'/address').read().strip()
     sw_version = "v1.0"
 
@@ -282,6 +285,10 @@ while True:
                 videk_ip = videk_ip[0]
             if current_ip != videk_ip:
                 init(videk, current_ip)
+            elif ebottle:
+                tags = manageTags(node_model['id'])
+                tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
+                uploadSensors(node_model['name'], node_model['id'], "ebotle", tags)
         else:
             init(videk, current_ip)
 
