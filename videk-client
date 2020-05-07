@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import re
 import sys
 import json
@@ -48,8 +49,10 @@ else:
     info = "example.com"
 
 if "ebottle" in sys:
-    ebottle = True
+    tag_file = "/tmp/ebottle/tags"
+    tag_file_last_modified = 0
     ebottle_cluster = sys
+    ebottle = True
 else:
     ebottle = False
 
@@ -105,16 +108,25 @@ def prepareSensors(tag, gw_id):
     return sensors
 
 def manageTags(gw_id):
+    global tag_file_last_modified
     
     gw_tags = []
     leds = []
     
-    try:
-        t = open('/tmp/ebottle/tags')
-        tags = json.load(t)
-    except:
-        pass
-    
+    tag_file_exists = os.path.isfile(tag_file)
+
+    if tag_file_exists:
+        tag_file_modified = os.path.getmtime(tag_file)
+
+        if tag_file_modified != tag_file_last_modified:
+            tag_file_last_modified = tag_file_modified
+            t = open(tag_file)
+            tags = json.load(t)
+        else:
+            return None
+    else:
+        return None
+            
     cluster_id = videk.getClusterID(ebottle_cluster)
     if cluster_id == None:
         videk.createCluster(ebottle_cluster, "ble")
@@ -265,9 +277,11 @@ def init(videk, current_ip):
         print("updated node location")
 
     if ebottle:
-        tags = manageTags(node_model['id'], lat, lon)
-        tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
-        uploadSensors(node_model['name'], node_model['id'], "ebotle", tags, lat, lon)
+        tags = manageTags(node_model['id'])
+
+        if tags is not None:
+            tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
+            uploadSensors(node_model['name'], node_model['id'], "ebotle", tags)
 
 
 while True:
@@ -287,8 +301,10 @@ while True:
                 init(videk, current_ip)
             elif ebottle:
                 tags = manageTags(node_model['id'])
-                tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
-                uploadSensors(node_model['name'], node_model['id'], "ebotle", tags)
+
+                if tags is not None:
+                    tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
+                    uploadSensors(node_model['name'], node_model['id'], "ebotle", tags)
         else:
             init(videk, current_ip)
 
