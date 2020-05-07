@@ -139,7 +139,7 @@ def manageTags(gw_id, lat, lon):
                 leds.append({"mac": tag_mac, "leds": extra_field['LEDs'] })
 
     f = open("/tmp/ebottle/leds", "w")
-    f.write(json.dumps(leds))
+    f.write(json.dumps(leds) + '\n')
     f.close()
 
     return gw_tags
