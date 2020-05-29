@@ -25,7 +25,7 @@ def getserial():
     return cpuserial
 
 conf = {}
-with open('/etc/videk/conf') as confile:
+with open('conf') as confile:
     for line in confile:
         name, var = line.partition("=")[::2]
         conf[name.strip()] = var.strip()
@@ -49,7 +49,7 @@ else:
     info = "example.com"
 
 if "ebottle" in sys:
-    tag_file = "/tmp/ebottle/tags"
+    tag_file = "test/tags"
     tag_file_last_modified = 0
     ebottle_cluster = sys
     ebottle = True
@@ -143,7 +143,7 @@ def manageTags(gw_id):
             tag_model = videk.getNode(tag_mac)
 
         tag_id = int(tag_model['id'])
-        gw_tags.append(tag_id)
+        gw_tags.append(tag_mac)
         sensors = tag
         sensors.pop("mac")
         sensors = prepareSensors(sensors, gw_id)
@@ -153,7 +153,7 @@ def manageTags(gw_id):
             if 'LEDs' in extra_field:
                 leds.append({"mac": tag_mac, "leds": extra_field['LEDs'] })
 
-    f = open("/tmp/ebottle/leds", "w")
+    f = open("test/leds", "w")
     f.write(json.dumps(leds) + '\n')
     f.close()
 
@@ -180,8 +180,8 @@ def init(videk, current_ip):
 
     if current_ip != node_ip:
         print("reseting hostname and munin services ...")
-        subprocess.call(["set-hostname"])
-        subprocess.call(["systemctl", "restart", "munin-node"])
+        #subprocess.call(["set-hostname"])
+        #subprocess.call(["systemctl", "restart", "munin-node"])
         node = socket.gethostname()
         
         cluster = node[:node.rfind("-")]
@@ -277,7 +277,7 @@ def init(videk, current_ip):
         print("updated node location")
 
     if ebottle:
-        tags = manageTags(node_model['id'])
+        tags = manageTags(node_model['machine_id'])
 
         if tags is not None:
             tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
@@ -300,7 +300,7 @@ while True:
             if current_ip != videk_ip:
                 init(videk, current_ip)
             elif ebottle:
-                tags = manageTags(node_model['id'])
+                tags = manageTags(node_model['machine_id'])
 
                 if tags is not None:
                     tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
@@ -308,4 +308,4 @@ while True:
         else:
             init(videk, current_ip)
 
-    time.sleep(10*60)
+    time.sleep(10)

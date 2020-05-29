@@ -1,7 +1,7 @@
 if=lo
-api=http://localhost
+api=http://localhost:3000
 key=secret
-host=test-test
+host=ebottle-gw
 id=machine-id
-sys=test-test
+sys=ebottle-sh
 info=http://example.com

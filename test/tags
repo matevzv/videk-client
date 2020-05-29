@@ -2,9 +2,9 @@
 "temperature":25,
 "battery":50,
 "luminance":100000,
-"position_xyz":[1,0,1]},
+"position_xyz":[0,1,1]},
 {"mac":"EE112233FFEE",
 "temperature":25,
 "battery":50,
 "luminance":100000,
-"position_xyz":[0,1,1]}]
+"position_xyz":[1,0,0]}]
