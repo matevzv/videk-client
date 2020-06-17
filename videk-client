@@ -25,7 +25,7 @@ def getserial():
     return cpuserial
 
 conf = {}
-with open('conf') as confile:
+with open('/etc/videk/conf') as confile:
     for line in confile:
         name, var = line.partition("=")[::2]
         conf[name.strip()] = var.strip()
@@ -49,7 +49,7 @@ else:
     info = "example.com"
 
 if "ebottle" in sys:
-    tag_file = "test/tags"
+    tag_file = "/tmp/ebottle/tags"
     tag_file_last_modified = 0
     ebottle_cluster = sys
     ebottle = True
@@ -72,13 +72,18 @@ def uploadSensors(node, node_id, sensor_type, sensors):
             videk.createSensor(node_id, sensor_type, sensor['name'],
                 sensor['unit'])
             sensor_id = videk.getSensorID(node, sensor_type, sensor['name'])
+        
+        if 'ts' in sensor.keys():
+            ts = sensor['ts']
+        else:
+            ts = datetime.utcnow().isoformat()
 
         measurement = '''{"latitude":"","longitude":"","ts":"","value":""}'''
         v = sensor['value']
         preparedData = []
         data = json.loads(measurement)
         data['value'] = v
-        data['ts'] = datetime.utcnow().isoformat()
+        data['ts'] = ts
         data['latitude'] = lat
         data['longitude'] = lon
         preparedData.append(data)
@@ -153,11 +158,37 @@ def manageTags(gw_id):
             if 'LEDs' in extra_field:
                 leds.append({"mac": tag_mac, "leds": extra_field['LEDs'] })
 
-    f = open("test/leds", "w")
+    f = open("/tmp/ebottle/leds", "w")
     f.write(json.dumps(leds) + '\n')
     f.close()
 
     return gw_tags
+
+def readPipe(_pipe):
+    FIFO = _pipe
+    data = ""
+
+    try:
+        with open(FIFO) as fifo:
+            data = fifo.readlines()
+
+    except:
+        pass
+
+    return data
+
+def manageGrideye(gw_name, gw_id):
+    sensors = []
+
+    events = readPipe("test/mypipe")
+
+    for event in events:
+        event = event.strip().split(" ")
+        ts = int(float(event[0]))
+        sensor = {'name': "grideye_events", 'ts': datetime.utcfromtimestamp(ts).isoformat(), 'value': event[1], 'unit':""}
+        sensors.append(sensor)
+    
+    uploadSensors(gw_name, gw_id, "ebottle", sensors)
 
 def init(videk, current_ip):
     global conf
@@ -277,6 +308,7 @@ def init(videk, current_ip):
         print("updated node location")
 
     if ebottle:
+        manageGrideye(node_model['name'], node_model['id'])
         tags = manageTags(node_model['machine_id'])
 
         if tags is not None:
@@ -300,6 +332,7 @@ while True:
             if current_ip != videk_ip:
                 init(videk, current_ip)
             elif ebottle:
+                manageGrideye(node_model['name'], node_model['id'])
                 tags = manageTags(node_model['machine_id'])
 
                 if tags is not None:
@@ -308,4 +341,4 @@ while True:
         else:
             init(videk, current_ip)
 
-    time.sleep(10)
+    time.sleep(10*60)
