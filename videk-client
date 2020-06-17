@@ -72,7 +72,7 @@ def uploadSensors(node, node_id, sensor_type, sensors):
             videk.createSensor(node_id, sensor_type, sensor['name'],
                 sensor['unit'])
             sensor_id = videk.getSensorID(node, sensor_type, sensor['name'])
-        
+
         if 'ts' in sensor.keys():
             ts = sensor['ts']
         else:
