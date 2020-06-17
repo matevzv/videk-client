@@ -187,7 +187,7 @@ def manageGrideye(gw_name, gw_id):
         ts = int(float(event[0]))
         sensor = {'name': "grideye_events", 'ts': datetime.utcfromtimestamp(ts).isoformat(), 'value': event[1], 'unit':""}
         sensors.append(sensor)
-    
+
     uploadSensors(gw_name, gw_id, "ebottle", sensors)
 
 def init(videk, current_ip):
