@@ -311,7 +311,7 @@ def init(videk, current_ip):
         manageGrideye(node_model['name'], node_model['id'])
         tags = manageTags(node_model['machine_id'])
 
-        if tags is not None:
+        if tags:
             tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
             uploadSensors(node_model['name'], node_model['id'], "ebotle", tags)
 
@@ -335,7 +335,7 @@ while True:
                 manageGrideye(node_model['name'], node_model['id'])
                 tags = manageTags(node_model['machine_id'])
 
-                if tags is not None:
+                if tags:
                     tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
                     uploadSensors(node_model['name'], node_model['id'], "ebotle", tags)
         else:
