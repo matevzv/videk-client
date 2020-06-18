@@ -43,6 +43,10 @@ else:
 if "sys" in conf:
     sys = conf['sys']
 
+timeout = 600
+if conf['mode'] == "dev":
+    timeout = 10
+
 if "info" in conf:
     info = conf['info']
 else:
@@ -342,4 +346,4 @@ while True:
         else:
             init(videk, current_ip)
 
-    time.sleep(10*60)
+    time.sleep(timeout)

@@ -3,5 +3,6 @@ api=http://localhost:3000
 key=secret
 host=ebottle-gw
 id=machine-id
+mode=normal
 sys=ebottle-sh
 info=http://example.com
