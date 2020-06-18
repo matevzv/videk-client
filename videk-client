@@ -169,8 +169,9 @@ def readPipe(_pipe):
     data = ""
 
     try:
-        with open(FIFO) as fifo:
-            data = fifo.readlines()
+        io = os.open(FIFO, os.O_RDONLY | os.O_NONBLOCK)
+        buffer = os.read(io, 999999).decode('utf-8')
+        data = buffer.splitlines()
 
     except:
         pass
