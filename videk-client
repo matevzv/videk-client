@@ -174,7 +174,8 @@ def readPipe(_pipe):
 
     try:
         io = os.open(FIFO, os.O_RDONLY | os.O_NONBLOCK)
-        buffer = os.read(io, 999999).decode('utf-8')
+        buffer = os.read(io, 65536).decode('utf-8') # 64k is default pipe size
+        os.close(io)
         data = buffer.splitlines()
 
     except:
