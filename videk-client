@@ -44,7 +44,7 @@ if "sys" in conf:
     sys = conf['sys']
 
 timeout = 600
-if conf['mode'] == "dev":
+if ('mode' in conf) and (conf['mode'] == "dev"):
     timeout = 10
 
 if "info" in conf:
