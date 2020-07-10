@@ -41,7 +41,9 @@ else:
     machine_id = open('/etc/machine-id').readline().strip()
 
 if "sys" in conf:
-    sys = conf['sys']
+    _system = conf['sys']
+else:
+    _system = ""
 
 timeout = 600
 if ('mode' in conf) and (conf['mode'] == "dev"):
@@ -52,10 +54,10 @@ if "info" in conf:
 else:
     info = "example.com"
 
-if "ebottle" in sys:
+if "ebottle" in _system:
     tag_file = "/tmp/ebottle/tags"
     tag_file_last_modified = 0
-    ebottle_cluster = sys
+    ebottle_cluster = _system
     ebottle = True
 else:
     ebottle = False
