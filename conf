@@ -1,8 +1,5 @@
 if=lo
 api=http://localhost:3000
 key=secret
-host=ebottle-gw
+host=saam-pmc
 id=machine-id
-mode=normal
-sys=ebottle-sh
-info=http://example.com
