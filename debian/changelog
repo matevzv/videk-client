@@ -1,3 +1,9 @@
+videk-client (3.2.0-1) unstable; urgency=medium
+
+  * Fix same host bug
+
+ -- Matevz Vucnik <matevz.vucnik@ijs.si>  Mon, 28 Sep 2020 14:29:01 +0200
+
 videk-client (3.1.0-1) unstable; urgency=medium
 
   * Add grideye support 
