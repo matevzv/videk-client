@@ -25,7 +25,7 @@ def getserial():
     return cpuserial
 
 conf = {}
-with open('conf') as confile:
+with open('/etc/videk/conf') as confile:
     for line in confile:
         name, var = line.partition("=")[::2]
         conf[name.strip()] = var.strip()
@@ -50,7 +50,7 @@ if "sys" in conf:
 else:
     _system = ""
 
-timeout = 10
+timeout = 600
 if ('mode' in conf) and (conf['mode'] == "dev"):
     timeout = 10
 
@@ -209,8 +209,7 @@ def init(videk, current_ip):
     global lat
     global lon
 
-    #node = socket.gethostname()
-    node = open('host').readline().strip()
+    node = socket.gethostname()
     cluster = node[:node.rfind("-")]
     mac = open('/sys/class/net/'+conf['if']+'/address').read().strip()
     sw_version = "v1.0"
@@ -223,7 +222,7 @@ def init(videk, current_ip):
     if node_ip:
         node_ip = node_ip[0]
 
-    if False:
+    if current_ip != node_ip:
         print("reseting hostname and munin services ...")
         subprocess.call(["set-hostname"])
         subprocess.call(["systemctl", "restart", "munin-node"])
@@ -340,14 +339,12 @@ while True:
         node_model = videk.getNodeByHardwareId(machine_id)
         if node_model:
             node_name = node_model['name']
-            #node_name = "saam-lgtc-172-29-0-78"
             videk_ip = re.findall(r'[0-9]+(?:\.[0-9]+){3}', node_name.replace("-", "."))
             if videk_ip:
                 videk_ip = videk_ip[0]
                 prefix = node_name.split(videk_ip.split(".")[0])[0][:-1]
                 if current_ip != videk_ip or prefix != host:
                     init(videk, current_ip)
-                    print("UPDATE")
             elif ebottle:
                 manageGrideye(node_model['name'], node_model['id'])
                 tags = manageTags(node_model['machine_id'])

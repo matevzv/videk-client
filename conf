@@ -1,5 +1,5 @@
 if=lo
 api=http://localhost:3000
 key=secret
-host=saam-pmc
+host=sna-lgtc
 id=machine-id
