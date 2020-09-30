@@ -210,7 +210,7 @@ def init(videk, current_ip):
     global lon
 
     #node = socket.gethostname()
-    node = open('host').readline().strip()
+    node = open('test/host').readline().strip()
     cluster = node[:node.rfind("-")]
     mac = open('/sys/class/net/'+conf['if']+'/address').read().strip()
     sw_version = "v1.0"
