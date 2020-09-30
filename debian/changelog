@@ -1,3 +1,9 @@
+videk-client (3.3.0-1) unstable; urgency=medium
+
+  * Fix same host bug again
+
+ -- Matevz Vucnik <matevz.vucnik@ijs.si>  Wed, 30 Sep 2020 14:41:19 +0200
+
 videk-client (3.2.0-1) unstable; urgency=medium
 
   * Fix same host bug
