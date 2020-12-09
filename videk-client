@@ -5,11 +5,24 @@ import re
 import sys
 import json
 import time
+import signal
 import socket
 import subprocess
 import netifaces as ni
 from datetime import datetime
 from videkrestclient import Videk
+
+class watchdog:
+    def __init__(self, seconds=1, error_message='Timeout'):
+        self.seconds = seconds
+        self.error_message = error_message
+    def handle_timeout(self, signum, frame):
+        raise TimeoutError(self.error_message)
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+    def __exit__(self, type, value, traceback):
+        signal.alarm(0)
 
 def getserial():
     cpuserial = "0000000000000000"
@@ -330,36 +343,37 @@ def init(videk, current_ip):
 
 
 while True:
-    current_ip = None
-    try:
-        current_ip = ni.ifaddresses(conf['if'])[ni.AF_INET][0]['addr']
-    except:
-        pass
-    if current_ip:
-        node_model = videk.getNodeByHardwareId(machine_id)
-        if node_model:
-            node_name = node_model['name']
-            videk_ip = re.findall(r'[0-9]+(?:\.[0-9]+){3}', node_name.replace("-", "."))
-            if videk_ip:
-                videk_ip = videk_ip[0]
-                prefix = node_name.split(videk_ip.split(".")[0])[0][:-1]
-            elif machine_id in node_name:
-                videk_ip = ""
-                prefix = node_name.rsplit('-', 1)[0]
+    with watchdog(seconds=timeout*2):
+        current_ip = None
+        try:
+            current_ip = ni.ifaddresses(conf['if'])[ni.AF_INET][0]['addr']
+        except:
+            pass
+        if current_ip:
+            node_model = videk.getNodeByHardwareId(machine_id)
+            if node_model:
+                node_name = node_model['name']
+                videk_ip = re.findall(r'[0-9]+(?:\.[0-9]+){3}', node_name.replace("-", "."))
+                if videk_ip:
+                    videk_ip = videk_ip[0]
+                    prefix = node_name.split(videk_ip.split(".")[0])[0][:-1]
+                elif machine_id in node_name:
+                    videk_ip = ""
+                    prefix = node_name.rsplit('-', 1)[0]
+                else:
+                    videk_ip = ""
+                    prefix = node_name
+
+                if current_ip != videk_ip or prefix != host:
+                    init(videk, current_ip)
+                elif ebottle:
+                    manageGrideye(node_model['name'], node_model['id'])
+                    tags = manageTags(node_model['machine_id'])
+
+                    if tags:
+                        tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
+                        uploadSensors(node_model['name'], node_model['id'], "ebotle", tags)
             else:
-                videk_ip = ""
-                prefix = node_name
-
-            if current_ip != videk_ip or prefix != host:
                 init(videk, current_ip)
-            elif ebottle:
-                manageGrideye(node_model['name'], node_model['id'])
-                tags = manageTags(node_model['machine_id'])
 
-                if tags:
-                    tags = [{'name': 'tags', 'value': str(tags), 'unit': ''}]
-                    uploadSensors(node_model['name'], node_model['id'], "ebotle", tags)
-        else:
-            init(videk, current_ip)
-
-    time.sleep(timeout)
+        time.sleep(timeout)
